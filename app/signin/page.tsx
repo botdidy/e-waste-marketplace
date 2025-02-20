@@ -1,50 +1,42 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAuth } from "@/contexts/AuthContext"
 
 export default function SignIn() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const { login } = useAuth()
-  const router = useRouter()
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      await login(email, password)
-      router.push("/marketplace")
-    } catch (error) {
-      alert("Invalid credentials")
-    }
-  }
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/"
 
   return (
-    <div className="container mx-auto max-w-md">
-      <h1 className="text-3xl font-bold mb-6">Sign In</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+    <div className="flex h-screen w-full items-center justify-center">
+      <div className="w-full max-w-sm space-y-4 p-4">
+        <div className="space-y-2 text-center">
+          <h1 className="text-3xl font-bold">Sign In</h1>
+          <p className="text-gray-500">Enter your email below to sign in to your account</p>
         </div>
-        <div>
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" placeholder="m@example.com" required type="email" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" required type="password" />
+          </div>
+          <Button className="w-full" type="submit">
+            Sign In
+          </Button>
+          <div className="text-center text-sm">
+            Don't have an account?{" "}
+            <Link className="underline" href="/signup">
+              Sign up
+            </Link>
+          </div>
         </div>
-        <Button type="submit">Sign In</Button>
-      </form>
+      </div>
     </div>
   )
 }
